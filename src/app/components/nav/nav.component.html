@@ -1,0 +1,35 @@
+<nav class="bg-gray-800 text-white p-4 fixed w-full top-0 left-0 shadow-md">
+    <!-- <ul class="flex justify-center space-x-6">
+      <li><a routerLink="/dashboard" class="hover:text-gray-400">Dashboard</a></li>
+      <li><a routerLink="/budget" class="hover:text-gray-400">Budget</a></li>
+      <li><a routerLink="/expense" class="hover:text-gray-400">Expense</a></li>
+      <li><a routerLink="/incomes" class="hover:text-gray-400">Income</a></li>
+      <li><a routerLink="/transaction" class="hover:text-gray-400">Finance</a></li>
+    </ul> -->
+  </nav>
+  
+  <!-- Floating Plus Button -->
+  <div class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50">
+    <div class="relative">
+      <!-- 3D Plus Button -->
+      <button 
+        (click)="toggleFabMenu()"
+        class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-gray-600 flex items-center justify-center text-white text-4xl font-bold transition-all transform hover:scale-105 active:scale-95 border-4 border-white">
+        +
+      </button>
+  
+      <!-- Expanding Options -->
+      <div *ngIf="fabOpen" class="absolute top-20 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2">
+        <button (click)="navigateTo('/incomes')" 
+          class="bg-green-500 hover:bg-green-600 text-white rounded-full px-5 py-2 shadow-md">Income</button>
+        <button (click)="navigateTo('/expense')" 
+          class="bg-red-500 hover:bg-red-600 text-white rounded-full px-5 py-2 shadow-md">Expense</button>
+        <button (click)="navigateTo('/budget')" 
+          class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full px-5 py-2 shadow-md">Budget</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Routed Components -->
+  <router-outlet></router-outlet>
+  

@@ -1,0 +1,50 @@
+<div>
+  <h2>Income Tracker</h2>
+
+  <!-- Add/Edit Income Form -->
+  <form (ngSubmit)="updateIncome()">
+    <!-- Bind the IncomeId so that the form is aware of it -->
+    <input type="hidden" [(ngModel)]="newIncome.incomeId" name="incomeId" />
+
+    <label for="amount">Amount:</label>
+    <input type="number" [(ngModel)]="newIncome.amount" name="amount" required />
+
+    <label for="date">Date:</label>
+    <input type="date" [(ngModel)]="newIncome.date" name="date" required />
+
+    <label for="category">Category:</label>
+    <select [(ngModel)]="newIncome.category" name="category" required>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+
+    <label for="notes">Notes:</label>
+    <input type="text" [(ngModel)]="newIncome.notes" name="notes" />
+
+    <button type="submit">{{ isEditMode ? 'Update Income' : 'Add Income' }}</button>
+  </form>
+
+  <hr />
+
+  <!-- Filter by Category -->
+  <label>Filter by Category:</label>
+  <select [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+    <option value="">All</option>
+    <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+  </select>
+
+  <hr />
+
+  <!-- Display Income List -->
+  <h3>Income Records</h3>
+  <ul>
+    <li *ngFor="let income of filteredIncomes">
+      {{ income.date | date }} - {{ income.category }}: ${{ income.amount }} ({{ income.notes || 'No notes available'}})
+
+      <!-- Edit Button -->
+      <button (click)="editIncome(income)">Edit</button>
+
+      <!-- Delete Button -->
+      <button (click)="deleteIncome(income.incomeId)">Delete</button>
+    </li>
+  </ul>
+</div>

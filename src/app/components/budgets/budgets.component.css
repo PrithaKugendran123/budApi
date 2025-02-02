@@ -1,0 +1,50 @@
+.budget-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .notifications {
+    background: #ffdddd;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .budget-list {
+    margin-top: 20px;
+  }
+  
+  .budget-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .progress-bar {
+    background: #ddd;
+    height: 10px;
+    position: relative;
+    margin-top: 5px;
+  }
+  
+  .progress-bar div {
+    height: 100%;
+    background: green;
+  }
+  
+  .progress-bar .exceeded {
+    background: red;
+  }
+  
+  .warning {
+    color: red;
+    font-weight: bold;
+  }
+  

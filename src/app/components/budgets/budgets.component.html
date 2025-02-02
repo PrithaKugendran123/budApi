@@ -1,0 +1,58 @@
+<div class="container">
+  <h2>Budgets</h2>
+
+  <!-- Budget List -->
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Duration</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let budget of budgets">
+        <td>{{ budget.categoryName }}</td>
+        <td>{{ budget.budgetAmount | currency }}</td>
+        <td>{{ budget.duration }}</td>
+        <td>
+          <button (click)="editBudget(budget)">Edit</button>
+          <button (click)="deleteBudget(budget.budgetId)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>{{ selectedBudget ? 'Edit Budget' : 'Add Budget' }}</h3>
+
+  <!-- Budget Form -->
+  <form (ngSubmit)="selectedBudget ? updateBudget() : addBudget()">
+    <label>Category:</label>
+    <select [(ngModel)]="formBudget.categoryName" name="category" required>
+      <option value="">Select Category</option>
+      <option value="Groceries">Groceries</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Travel">Travel</option>
+      <option value="Entertainment">Entertainment</option>
+    </select>
+
+    <label>Amount:</label>
+    <input 
+      type="number" 
+      [(ngModel)]="formBudget.budgetAmount" 
+      name="amount" 
+      required 
+    />
+
+    <label>Duration:</label>
+    <select [(ngModel)]="formBudget.duration" name="duration" required>
+      <option value="Monthly">Monthly</option>
+      <option value="Weekly">Weekly</option>
+      <option value="Yearly">Yearly</option>
+    </select>
+
+    <button type="submit">{{ selectedBudget ? 'Update' : 'Add' }}</button>
+    <button type="button" *ngIf="selectedBudget" (click)="resetForm()">Cancel</button>
+  </form>
+</div>

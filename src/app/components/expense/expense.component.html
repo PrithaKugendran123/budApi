@@ -1,0 +1,49 @@
+<div>
+  <h2>Expense Tracker</h2>
+
+  <!-- Add/Edit Expense Form -->
+  <form (ngSubmit)="updateExpense()">
+    <input type="hidden" [(ngModel)]="newExpense.expenseId" name="expenseID" />
+
+    <label for="amount">Amount:</label>
+    <input type="number" [(ngModel)]="newExpense.amount" name="amount" required />
+
+    <label for="date">Date:</label>
+    <input type="date" [(ngModel)]="newExpense.date" name="date" required />
+
+    <label for="category">Category:</label>
+    <select [(ngModel)]="newExpense.category" name="category" required (change)="onCategoryChange()">
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+
+    <label for="notes">Notes:</label>
+    <input type="text" [(ngModel)]="newExpense.notes" name="notes" />
+
+    <button type="submit">{{ isEditMode ? 'Update Expense' : 'Add Expense' }}</button>
+  </form>
+
+  <hr />
+
+  <!-- Filter by Category -->
+  <label>Filter by Category:</label>
+  <select [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+    <option value="">All Categories</option>
+    <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+  </select>
+
+  <hr />
+
+  <!-- Display Expense List -->
+  <h3>Expense Records</h3>
+  <ul>
+    <li *ngFor="let expense of filteredExpenses">
+      {{ expense.date | date }} - {{ expense.category }}: ${{ expense.amount }}  ({{ expense.notes || 'No notes available'}})
+
+      <!-- Edit Button -->
+      <button (click)="editExpense(expense)">Edit</button>
+
+      <!-- Delete Button -->
+      <button (click)="deleteExpense(expense.expenseId)">Delete</button>
+    </li>
+  </ul>
+</div>

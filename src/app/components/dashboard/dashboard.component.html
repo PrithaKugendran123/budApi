@@ -1,0 +1,25 @@
+
+<div class="dashboard-container">
+  <h2>Budget Tracker</h2>
+
+
+
+ 
+
+  <!-- Total Metrics (Optional for general overview) -->
+  <div class="metrics">
+    <div class="metric-card">
+      <h3>Total Income</h3>
+      <p>{{ totalIncome | currency }}</p>
+    </div>
+    <div class="metric-card">
+      <h3>Total Expenses</h3>
+      <p>{{ totalExpenses | currency }}</p>
+    </div>
+    <div class="metric-card">
+      <h3>Remaining Budget</h3>
+      <p>{{ remainingBudget | currency }}</p>
+    </div>
+  </div>
+
+</div>
