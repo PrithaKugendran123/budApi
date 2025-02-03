@@ -12,10 +12,12 @@ import { IncomesComponent } from './components/incomes/incomes.component';
 import { ExpenseComponent } from './components/expense/expense.component';
 import { FinanceDashboardComponent } from './components/finance-dashboard/finance-dashboard.component';
 import { NavComponent } from './components/nav/nav.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 
 @NgModule({
-  declarations: [AppComponent, UserListComponent, DashboardComponent, BudgetComponent, IncomesComponent, ExpenseComponent, FinanceDashboardComponent, NavComponent],
+  declarations: [AppComponent, UserListComponent, DashboardComponent, BudgetComponent, IncomesComponent, ExpenseComponent, FinanceDashboardComponent, NavComponent, LoginComponent, RegisterComponent],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule,FormsModule,
     ReactiveFormsModule],
   providers: [],

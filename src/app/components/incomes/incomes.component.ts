@@ -8,21 +8,19 @@ import { Incomes } from '../../models/incomes.model';
   styleUrls: ['./incomes.component.css']
 })
 export class IncomesComponent implements OnInit {
-  incomes: Incomes[] = []; // Full income list
-  filteredIncomes: Incomes[] = []; // Filtered list based on category selection
-  categories: string[] = ['Salary', 'Business', 'Investments', 'Freelance', 'Other']; // Example categories
-  selectedCategory: string = ''; // Selected category for filtering
-
-  newIncome: Incomes = { 
-    incomeId: 0, 
-    userId: 1, 
-    amount: 0, 
-    date: '', // Change date to string initially
-    category: '', 
+  incomes: Incomes[] = []; // Initialize as an empty array
+  filteredIncomes: Incomes[] = [];
+  categories: string[] = ['Salary', 'Business', 'Investments', 'Freelance', 'Other'];
+  selectedCategory: string = '';
+  newIncome: Incomes = {
+    incomeId: 0,
+    userId: 0,  // Will be filled automatically with current user's ID
+    amount: 0,
+    date: '',
+    category: '',
     notes: ''
   };
-
-  isEditMode: boolean = false; // To check if the form is in edit mode
+  isEditMode: boolean = false;
 
   constructor(private incomeService: IncomeService) {}
 
@@ -30,12 +28,19 @@ export class IncomesComponent implements OnInit {
     this.getIncomes();
   }
 
-  // Fetch all incomes
+  // Get incomes for the current user
   getIncomes(): void {
-    this.incomeService.getIncomes().subscribe((data) => {
-      this.incomes = data;
-      this.filteredIncomes = data;
-    });
+    this.incomeService.getIncomes().subscribe(
+      (response: any) => {
+        // Assuming the incomes are inside the "$values" property
+        this.incomes = response.$values || []; // Ensure that incomes is an array
+        this.filteredIncomes = [...this.incomes]; // Make a shallow copy of incomes
+      },
+      (error) => {
+        console.error('Error fetching incomes:', error);
+        // You can show an error message to the user here
+      }
+    );
   }
 
   // Filter incomes by category
@@ -47,51 +52,65 @@ export class IncomesComponent implements OnInit {
     }
   }
 
-  // Populate form with selected income for editing
+  // Edit an existing income
   editIncome(income: Incomes): void {
-    this.newIncome = { ...income }; // Copy the selected income to the form
+    this.newIncome = { ...income };
     this.isEditMode = true;
-
-    // Format the date to 'YYYY-MM-DD' for the input field
-    this.newIncome.date = this.formatDate(income.date);
+    this.newIncome.date = this.formatDate(income.date); // Format the date for input
   }
 
-  // Utility function to format date as 'YYYY-MM-DD'
-  formatDate(date: Date | string): string {
+  // Format date to 'YYYY-MM-DD'
+  formatDate(date: string | Date): string {
     const d = new Date(date);
     const year = d.getFullYear();
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');  // Add leading zero for months
-    const day = d.getDate().toString().padStart(2, '0');  // Add leading zero for days
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
-  // Update income if in edit mode, otherwise add a new one
+  // Add or update an income
   updateIncome(): void {
     if (this.isEditMode) {
-      this.incomeService.updateIncome(this.newIncome.incomeId, this.newIncome).subscribe(() => {
-        this.getIncomes(); // Refresh the list
-        this.resetForm();
-      });
+      this.incomeService.updateIncome(this.newIncome.incomeId, this.newIncome).subscribe(
+        () => {
+          this.getIncomes();  // Refresh the list
+          this.resetForm();
+        },
+        (error) => {
+          console.error('Error updating income:', error);
+        }
+      );
     } else {
-      this.incomeService.addIncome(this.newIncome).subscribe((data) => {
-        this.incomes.push(data);
-        this.filterByCategory(); // Apply category filter again
-        this.resetForm();
-      });
+      this.newIncome.userId = 1; // Replace with actual user ID if needed
+      this.incomeService.addIncome(this.newIncome).subscribe(
+        (data) => {
+          this.incomes.push(data);
+          this.filterByCategory();
+          this.resetForm();
+        },
+        (error) => {
+          console.error('Error adding income:', error);
+        }
+      );
     }
   }
 
-  // Delete an income record
+  // Delete an income
   deleteIncome(id: number): void {
-    this.incomeService.deleteIncome(id).subscribe(() => {
-      this.incomes = this.incomes.filter(income => income.incomeId !== id);
-      this.filterByCategory(); // Apply category filter again
-    });
+    this.incomeService.deleteIncome(id).subscribe(
+      () => {
+        this.incomes = this.incomes.filter(income => income.incomeId !== id);
+        this.filterByCategory();
+      },
+      (error) => {
+        console.error('Error deleting income:', error);
+      }
+    );
   }
 
-  // Reset form after adding/updating income
+  // Reset form after add/edit
   resetForm(): void {
-    this.newIncome = { incomeId: 0, userId: 1, amount: 0, date: '', category: '', notes: '' };
+    this.newIncome = { incomeId: 0, userId: 0, amount: 0, date: '', category: '', notes: '' };
     this.isEditMode = false;
   }
 }

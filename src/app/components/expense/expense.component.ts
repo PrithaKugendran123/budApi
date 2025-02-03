@@ -40,9 +40,9 @@ export class ExpenseComponent implements OnInit {
   // Fetch all expenses from the backend
   getExpenses(): void {
     this.expenseService.getExpenses().subscribe((data: any) => {
-      this.expenses = data.$values; // Access $values from the response
+      console.log('Fetched expenses:', data);
+      this.expenses = data.$values || data;  // Fix if the response structure is different
       this.filteredExpenses = this.expenses;
-      console.log('Expenses fetched from backend:', this.expenses);
     });
   }
 
@@ -55,21 +55,16 @@ export class ExpenseComponent implements OnInit {
     } else {
       this.filteredExpenses = [...this.expenses]; // Reset to show all if no category selected
     }
-    console.log('Filtered Expenses:', this.filteredExpenses);
   }
+
+  // Handle category change
   onCategoryChange(): void {
     console.log('Selected Category:', this.newExpense.category); // Log the selected category
     const selectedBudget = this.categoryToBudgetMap[this.newExpense.category];
-    console.log('Mapped Budget ID:', selectedBudget); // Log the mapped budget ID
-  
     if (selectedBudget !== undefined) {
-      this.newExpense.budgetId = selectedBudget;
-      console.log('Updated Budget ID:', this.newExpense.budgetId); // Log the updated budget ID
-    } else {
-      console.log('No budget found for category:', this.newExpense.category);
+      this.newExpense.budgetId = selectedBudget;  // Set the budgetId for the selected category
     }
   }
-  
 
   // Populate the form for editing an expense
   editExpense(expense: Expense): void {
@@ -77,13 +72,10 @@ export class ExpenseComponent implements OnInit {
     this.isEditMode = true;
     this.newExpense.date = this.formatDate(expense.date);
     this.selectedCategory = expense.category;  // Set selected category on edit
-    this.onCategoryChange(); // Update the budgetId based on selected category
-
-    // After editing, log the selected category and budget ID
-    console.log('Selected Category:', this.selectedCategory);
-    console.log('Selected Budget ID:', this.newExpense.budgetId);
+    this.onCategoryChange();
   }
 
+  // Format date for input field
   formatDate(date: Date | string): string {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -92,30 +84,33 @@ export class ExpenseComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
+  // Update or Add expense
   updateExpense(): void {
-    console.log('Before updating or adding expense:', this.newExpense);  // Log the new expense data
+    const expenseToSubmit = {
+      CategoryName: this.newExpense.category,
+      Amount: this.newExpense.amount,
+      Date: this.newExpense.date,
+      Notes: this.newExpense.notes
+    };
+
     if (this.isEditMode) {
-      this.expenseService.updateExpense(this.newExpense.expenseId, this.newExpense).subscribe(() => {
-        this.getExpenses();
-        this.resetForm();
+      this.expenseService.updateExpense(this.newExpense.expenseId, expenseToSubmit).subscribe(() => {
+        this.getExpenses(); // Refresh expenses list
+        this.resetForm(); // Reset form fields
       });
     } else {
-      this.expenseService.addExpense(this.newExpense).subscribe(
+      this.expenseService.addExpense(expenseToSubmit).subscribe(
         (data) => {
-          console.log('Expense added successfully:', data);
-          this.expenses.push(data);
-          this.filterByCategory();
-          this.resetForm();
+          this.expenses.push(data); // Add new expense to list
+          this.filterByCategory(); // Apply category filter
+          this.resetForm(); // Reset form
         },
         (error) => {
           console.error('Error adding expense:', error);
-          // Log full error message here for better insights
         }
       );
     }
   }
-  
-  
 
   // Delete an expense by its ID
   deleteExpense(expenseId: number): void {
@@ -123,7 +118,6 @@ export class ExpenseComponent implements OnInit {
       this.expenseService.deleteExpense(expenseId).subscribe(() => {
         this.expenses = this.expenses.filter(expense => expense.expenseId !== expenseId);
         this.filteredExpenses = this.filteredExpenses.filter(expense => expense.expenseId !== expenseId);
-        console.log(`Expense with ID ${expenseId} deleted successfully.`);
       });
     }
   }

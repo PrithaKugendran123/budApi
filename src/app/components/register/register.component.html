@@ -1,0 +1,26 @@
+<!-- register.component.html -->
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" class="form-control" formControlName="name" required />
+    </div>
+  
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" class="form-control" formControlName="email" required />
+    </div>
+  
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" class="form-control" formControlName="password" required />
+    </div>
+  
+    <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Register</button>
+  </form>
+  
+  <!-- Button to redirect to the login page -->
+  <div class="login-redirect">
+    <p>Already have an account?</p>
+    <button (click)="goToLogin()" class="btn btn-secondary">Login</button>
+  </div>
+  

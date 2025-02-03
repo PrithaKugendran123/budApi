@@ -8,8 +8,10 @@ import { ExpenseComponent } from './components/expense/expense.component';
 import { TransactionService } from './services/transaction.service';
 import { FinanceDashboardComponent } from './components/finance-dashboard/finance-dashboard.component';
 import { NavComponent } from './components/nav/nav.component';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
 
-const routes: Routes = [  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // Redirect to dashboard on load
+const routes: Routes = [  { path: '', redirectTo: '/register', pathMatch: 'full' }, // Redirect to dashboard on load
   { path: 'dashboard', component: DashboardComponent },
   { path: 'users', component: UserListComponent },
   { path: 'budget', component: BudgetComponent },
@@ -17,6 +19,8 @@ const routes: Routes = [  { path: '', redirectTo: '/dashboard', pathMatch: 'full
   { path: 'expense', component: ExpenseComponent },
   { path: 'nav', component: NavComponent },
   { path: 'transaction', component: FinanceDashboardComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
 ];
 
 @NgModule({

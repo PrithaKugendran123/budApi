@@ -1,0 +1,32 @@
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+  
+  .mt-3 {
+    margin-top: 20px;
+  }
+  
+  /* register.component.css */
+.login-redirect {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .login-redirect p {
+    font-size: 14px;
+  }
+  
+  .login-redirect .btn {
+    margin-top: 10px;
+  }
+  

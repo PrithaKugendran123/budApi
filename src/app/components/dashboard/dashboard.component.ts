@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
-import { TransactionService } from '../../services/transaction.service';
+import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,35 +10,58 @@ export class DashboardComponent implements OnInit {
   totalIncome: number = 0;
   totalExpenses: number = 0;
   remainingBudget: number = 0;
-  selectedMonth: string = '';  // To store the selected month
-  incomeForMonth: number = 0;
-  expenseForMonth: number = 0;
-  balanceForMonth: number = 0;
+  isLoading: boolean = false;  // Added loading state
+  error: string = '';  // Added error state for better UI feedback
 
-  constructor(private userService: UserService ,transactionService:TransactionService) {}
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    this.loadDashboardData();  // Load initial data
+    this.loadDashboardData();
   }
-
-  // Method to load the data for the selected month
-  loadMonthData(): void {
-    if (!this.selectedMonth) return; // Check if a month is selected
-
-    this.userService.getMonthData(this.selectedMonth).subscribe(data => {
-      this.incomeForMonth = data.totalIncome;
-      this.expenseForMonth = data.totalExpenses;
-      this.balanceForMonth = this.incomeForMonth - this.expenseForMonth;
-    });
-  }
-
-  // This will fetch the default data (overall)
-  loadDashboardData() {
-    this.userService.getDashboardMetrics().subscribe(data => {
-      this.totalIncome = data.totalIncome;
-      this.totalExpenses = data.totalExpenses;
-      this.remainingBudget = data.remainingBudget;
-    });
+  loadDashboardData(): void {
+    this.isLoading = true;  // Set loading state to true when data is being fetched
+    this.error = '';  // Reset any previous errors
+  
+    // Fetch total income
+    this.dashboardService.getTotalIncome().subscribe(
+      (incomes) => {
+        console.log('Incomes Response:', incomes);  // Log full response for debugging
+  
+        // Extract total income (adjust if necessary based on your API response structure)
+        if (incomes && incomes.$values && incomes.$values.length > 0) {
+          this.totalIncome = incomes.$values.reduce((sum: number, income: any) => sum + income.amount, 0);
+        } else {
+          this.totalIncome = 0;
+        }
+  
+        this.updateRemainingBudget();
+        console.log('Total Income:', this.totalIncome);  // Log total income value
+      },
+      (error) => {
+        console.error('Error fetching total income:', error);
+        this.error = 'Failed to load total income. Please try again later.';
+        this.isLoading = false;  // Set loading state to false on error
+      }
+    );
+  
+    // Fetch total expenses
+    this.dashboardService.getDashboardData().subscribe(
+      (expensesData) => {
+        console.log('Dashboard Data:', expensesData);  // Log the expenses data for debugging
+  
+        // Assuming expensesData is a number or contains a $values array
+        this.totalExpenses = expensesData ?? 0;  // Adjust based on the structure of your expenses data
+        this.updateRemainingBudget();
+      },
+      (error) => {
+        console.error('Error fetching dashboard data:', error);
+        this.error = 'Failed to load dashboard data. Please try again later.';
+        this.isLoading = false;  // Set loading state to false on error
+      }
+    );
   }
   
+  updateRemainingBudget(): void {
+    this.remainingBudget = this.totalIncome - this.totalExpenses;
+  }
 }
